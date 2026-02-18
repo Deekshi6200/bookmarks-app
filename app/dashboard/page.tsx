@@ -18,11 +18,17 @@ export default function Dashboard() {
   useEffect(() => { init(); }, []);
 
   const init = async () => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) window.location.href = "/";
-    setUser(data.user);
-    fetchBookmarks(data.user.id);
-  };
+  const { data } = await supabase.auth.getUser();
+
+  if (!data.user) {
+    window.location.href = "/";
+    return; // <-- THIS LINE FIXES VERCEL ERROR
+  }
+
+  setUser(data.user);
+  fetchBookmarks(data.user.id);
+};
+
 
   const fetchBookmarks = async (uid: string) => {
     const { data } = await supabase
